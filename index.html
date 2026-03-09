@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>С 8 Марта, Анастасия! 🌸</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@300;400;600;700&display=swap');
+
+  :root {
+    --pink: #f4a7c3;
+    --pink-light: #fce4ec;
+    --pink-deep: #e91e8c;
+    --blue: #b3d4f5;
+    --blue-light: #e3f2fd;
+    --blue-deep: #5b9bd5;
+    --lilac: #d4b8f0;
+    --white: #fffafe;
+    --text: #4a2c4a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--white);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  .screen {
+    display: none;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+  .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+  .petals-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0; overflow: hidden;
+  }
+  .petal {
+    position: absolute; top: -40px; font-size: 1.5rem;
+    animation: fall linear infinite;
+    opacity: 0.6;
+  }
+  @keyframes fall {
+    0% { transform: translateY(-40px) rotate(0deg); opacity: 0.7; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  .progress-bar {
+    position: fixed; top: 0; left: 0; height: 4px;
+    background: linear-gradient(90deg, var(--pink-deep), var(--blue-deep));
+    transition: width 0.6s ease;
+    z-index: 100;
+    border-radius: 0 4px 4px 0;
+  }
+  .step-dots {
+    position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 8px; z-index: 100;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; transition: all 0.4s; }
+  .dot.done { background: var(--pink-deep); transform: scale(1.2); }
+  .dot.active { background: var(--blue-deep); transform: scale(1.3); }
+
+  #screen1 { background: linear-gradient(135deg, #fce4ec 0%, #e3f2fd 50%, #f3e5f5 100%); }
+  .intro-content {
+    position: relative; z-index: 1; text-align: center; padding: 2rem;
+    animation: fadeInUp 1s ease;
+  }
+  .date-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--pink-deep), var(--blue-deep));
+    color: white; font-size: 0.85rem; font-weight: 700; letter-spacing: 3px;
+    padding: 6px 20px; border-radius: 20px; margin-bottom: 1.5rem;
+    text-transform: uppercase;
+  }
+  .intro-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--pink-deep) 0%, var(--blue-deep) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+  .intro-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-style: italic; color: var(--text); margin-bottom: 1.5rem;
+  }
+  .intro-sub {
+    font-size: 1.1rem; color: #888; margin-bottom: 2.5rem; line-height: 1.6;
+    max-width: 400px; text-align: center; margin-left: auto; margin-right: auto;
+  }
+  .envelope-wrap { margin: 1rem auto 2rem; cursor: pointer; transition: transform 0.3s; }
+  .envelope-wrap:hover { transform: scale(1.05) rotate(-2deg); }
+  .envelope { width: 120px; height: 90px; position: relative; margin: 0 auto; }
+  .env-body {
+    width: 120px; height: 90px;
+    background: linear-gradient(135deg, #fff0f7, #e8f4ff);
+    border: 2px solid var(--pink); border-radius: 4px; position: relative;
+    box-shadow: 0 8px 25px rgba(233,30,140,0.15);
+  }
+  .env-flap {
+    position: absolute; top: 0; left: 0; width: 0; height: 0;
+    border-left: 60px solid transparent; border-right: 60px solid transparent;
+    border-top: 45px solid var(--pink);
+    transition: transform 0.5s ease; transform-origin: top center;
+  }
+  .env-flap.open { transform: rotateX(180deg); }
+  .env-left {
+    position: absolute; bottom: 0; left: 0; width: 0; height: 0;
+    border-left: 35px solid var(--pink-light);
+    border-top: 45px solid transparent; border-bottom: 45px solid transparent;
+  }
+  .env-right {
+    position: absolute; bottom: 0; right: 0; width: 0; height: 0;
+    border-right: 35px solid var(--pink-light);
+    border-top: 45px solid transparent; border-bottom: 45px solid transparent;
+  }
+  .env-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 0;
+    border-left: 60px solid transparent; border-right: 60px solid transparent;
+    border-bottom: 45px solid #fce4ec;
+  }
+  .env-letter {
+    position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+    font-size: 1.5rem; transition: top 0.5s ease; z-index: 10;
+  }
+  .env-letter.fly { top: -30px; }
+  .btn-main {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--pink-deep), var(--blue-deep));
+    color: white; font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem; font-weight: 700;
+    padding: 14px 40px; border-radius: 50px; border: none; cursor: pointer;
+    box-shadow: 0 8px 25px rgba(233,30,140,0.3);
+    transition: all 0.3s; letter-spacing: 0.5px;
+  }
+  .btn-main:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(233,30,140,0.4); }
+  .btn-main:active { transform: translateY(0); }
+
+  #screen2 { background: linear-gradient(160deg, #fce4ec 0%, #e8f4ff 60%, #f3e5f5 100%); }
+  .game-wrap {
+    position: relative; z-index: 1; width: 100%; max-width: 600px;
+    padding: 1rem; text-align: center; animation: fadeInUp 0.6s ease;
+  }
+  .game-title { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 4vw, 2.2rem); color: var(--text); margin-bottom: 0.3rem; }
+  .game-sub { font-size: 0.95rem; color: #999; margin-bottom: 1rem; }
+  .game-stats { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; }
+  .stat-box { background: white; border-radius: 16px; padding: 8px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); font-size: 0.9rem; color: #888; }
+  .stat-box span { display: block; font-size: 1.4rem; font-weight: 700; color: var(--text); }
+  #gameCanvas {
+    border-radius: 20px; box-shadow: 0 12px 40px rgba(233,30,140,0.15);
+    background: linear-gradient(180deg, #fff0f7 0%, #e8f4ff 100%);
+    cursor: none; display: block; margin: 0 auto; max-width: 100%;
+  }
+  .game-message { margin-top: 0.8rem; font-size: 0.95rem; color: #aaa; min-height: 1.4rem; }
+  .btn-next {
+    display: none; margin-top: 1rem;
+    background: linear-gradient(135deg, var(--pink-deep), var(--blue-deep));
+    color: white; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700;
+    padding: 12px 35px; border-radius: 50px; border: none; cursor: pointer;
+    box-shadow: 0 6px 20px rgba(233,30,140,0.25); transition: all 0.3s;
+  }
+  .btn-next:hover { transform: translateY(-2px); }
+
+  #screen3 {
+    background: linear-gradient(140deg, #e3f2fd 0%, #fce4ec 50%, #f3e5f5 100%);
+    padding: 4rem 1rem 2rem; justify-content: flex-start;
+  }
+  .moments-wrap {
+    position: relative; z-index: 1; width: 100%; max-width: 700px;
+    padding: 1rem; text-align: center; animation: fadeInUp 0.6s ease;
+  }
+  .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--pink-deep); margin-bottom: 0.5rem; }
+  .moments-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 2.8rem); color: var(--text); margin-bottom: 0.5rem; }
+  .moments-sub { font-size: 0.95rem; color: #aaa; margin-bottom: 2rem; }
+  .photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 2rem; }
+  .photo-slot {
+    aspect-ratio: 1; border-radius: 16px; overflow: hidden; position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: transform 0.3s, box-shadow 0.3s; cursor: pointer;
+  }
+  .photo-slot:hover { transform: scale(1.04); box-shadow: 0 10px 28px rgba(233,30,140,0.18); }
+  .photo-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; display: block; }
+  .moments-caption {
+    font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem;
+    color: #999; margin-bottom: 2rem; line-height: 1.6;
+  }
+
+  #screen4 { background: linear-gradient(135deg, #f8e8ff 0%, #fce4ec 40%, #e3f2fd 100%); }
+  .final-wrap { position: relative; z-index: 1; text-align: center; padding: 2rem; max-width: 600px; animation: fadeInUp 0.8s ease; }
+  .final-emoji { font-size: 4rem; margin-bottom: 1rem; animation: bounce 1s ease infinite; }
+  @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  .final-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 3rem); color: var(--text); margin-bottom: 1.5rem; line-height: 1.2; }
+  .final-card {
+    background: white; border-radius: 24px; padding: 2rem 2.5rem; margin: 1.5rem 0;
+    box-shadow: 0 12px 40px rgba(233,30,140,0.12); border: 1px solid #fce4ec;
+    position: relative; overflow: hidden;
+  }
+  .final-card::before { content: '🌸'; position: absolute; top: -10px; right: -10px; font-size: 4rem; opacity: 0.1; }
+  .final-text { font-size: 1.05rem; line-height: 1.8; color: var(--text); font-style: italic; }
+  .final-signature { margin-top: 1rem; font-size: 0.9rem; color: var(--pink-deep); font-weight: 600; }
+  .confetti-btn {
+    background: linear-gradient(135deg, var(--pink-deep), var(--blue-deep));
+    color: white; font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 700;
+    padding: 12px 30px; border-radius: 50px; border: none; cursor: pointer; margin-top: 1rem;
+    box-shadow: 0 6px 20px rgba(233,30,140,0.25); transition: all 0.3s;
+  }
+  .confetti-btn:hover { transform: translateY(-2px); }
+
+  .confetti-piece {
+    position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 9999;
+    animation: confettiFall 3s ease-in forwards;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg) scale(1); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(1080deg) scale(0.3); opacity: 0; }
+  }
+
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-out { animation: fadeOut 0.5s ease forwards; }
+  @keyframes fadeOut { to { opacity: 0; transform: scale(0.95); } }
+
+  /* ========== MUSIC PLAYER ========== */
+  .music-player {
+    position: fixed; bottom: 20px; right: 20px; z-index: 500;
+    width: 280px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid #fce4ec; border-radius: 20px;
+    padding: 14px 16px;
+    box-shadow: 0 10px 40px rgba(233,30,140,0.18);
+    transition: all 0.3s;
+    font-family: 'Nunito', sans-serif;
+  }
+  .mp-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  }
+  .mp-cover {
+    width: 52px; height: 52px; border-radius: 12px; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--pink-deep), var(--blue-deep));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    animation: spin 8s linear infinite; animation-play-state: paused;
+    overflow:hidden;
+    image-rendering: high-quality;
+    transition: width 0.3s, height 0.3s, border-radius 0.3s;
+  }
+  .mp-cover.playing {
+    animation-play-state: running;
+    width: 64px; height: 64px; border-radius: 14px; 
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .mp-info { flex: 1; min-width: 0; }
+  .mp-track-name {
+    font-size: 0.85rem; font-weight: 700; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .mp-track-name.marquee { animation: marquee 6s linear infinite; }
+  @keyframes marquee { 0%,20% { transform: translateX(0); } 80%,100% { transform: translateX(-60%); } }
+  .mp-artist { font-size: 0.72rem; color: #bbb; }
+
+  /* Progress bar */
+  .mp-progress-wrap {
+    position: relative; margin-bottom: 4px; cursor: pointer;
+  }
+  .mp-progress-bg {
+    height: 4px; border-radius: 4px; background: #eee; position: relative; overflow: hidden;
+  }
+  .mp-progress-fill {
+    height: 100%; border-radius: 4px; width: 0%;
+    background: linear-gradient(90deg, var(--pink-deep), var(--blue-deep));
+    transition: width 0.5s linear;
+    pointer-events: none;
+  }
+  .mp-progress-input {
+    position: absolute; top: -6px; left: 0; width: 100%; height: 16px;
+    opacity: 0; cursor: pointer; margin: 0;
+    -webkit-appearance: none;
+  }
+  .mp-times {
+    display: flex; justify-content: space-between;
+    font-size: 0.68rem; color: #ccc; margin-bottom: 8px;
+  }
+
+  /* Controls */
+  .mp-controls {
+    display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px;
+  }
+  .mp-btn {
+    background: none; border: none; cursor: pointer; color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s, color 0.15s; padding: 2px;
+  }
+  .mp-btn:hover { transform: scale(1.15); color: var(--pink-deep); }
+  .mp-btn svg { width: 18px; height: 18px; fill: currentColor; }
+  .mp-play-btn {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--pink-deep), var(--blue-deep));
+    color: white !important; box-shadow: 0 4px 14px rgba(233,30,140,0.35);
+  }
+  .mp-play-btn svg { width: 16px; height: 16px; }
+  .mp-play-btn:hover { transform: scale(1.1) !important; }
+
+  /* Volume */
+  .mp-volume-row { display: flex; align-items: center; gap: 8px; }
+  .mp-vol-icon { font-size: 0.85rem; cursor: pointer; user-select: none; flex-shrink: 0; }
+  .mp-vol-slider {
+    flex: 1; -webkit-appearance: none; appearance: none;
+    height: 3px; border-radius: 3px; outline: none; cursor: pointer;
+    background: linear-gradient(90deg, var(--pink-deep) 0%, var(--pink-deep) 35%, #eee 35%);
+  }
+  .mp-vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 11px; height: 11px; border-radius: 50%;
+    background: var(--pink-deep); cursor: pointer;
+  }
+  .mp-vol-slider::-moz-range-thumb {
+    width: 11px; height: 11px; border-radius: 50%; border: none; background: var(--pink-deep); cursor: pointer;
+  }
+
+  /* Tracklist */
+  .mp-tracklist { margin-top: 10px; border-top: 1px solid #fce4ec; padding-top: 8px; display: none; }
+  .mp-tracklist.open { display: block; }
+  .mp-track-item {
+    display: flex; align-items: center; gap: 8px; padding: 5px 6px; border-radius: 10px;
+    cursor: pointer; transition: background 0.2s; font-size: 0.8rem; color: var(--text);
+  }
+  .mp-track-item:hover { background: #fff0f7; }
+  .mp-track-item.active { background: #fce4ec; font-weight: 700; color: var(--pink-deep); }
+  .mp-track-num { font-size: 0.7rem; color: #ccc; width: 14px; text-align: center; flex-shrink: 0; }
+  .mp-track-item.active .mp-track-num::before { content: '♪'; color: var(--pink-deep); }
+  .mp-track-label { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mp-list-btn {
+    background: none; border: none; cursor: pointer; font-size: 0.75rem;
+    color: #bbb; padding: 0; margin-left: auto; transition: color 0.2s;
+  }
+  .mp-list-btn:hover { color: var(--pink-deep); }
+
+  /* ========== LIGHTBOX ========== */
+  .lightbox {
+    display: none; position: fixed; inset: 0; z-index: 9000;
+    background: rgba(20, 10, 30, 0.85); backdrop-filter: blur(8px);
+    align-items: center; justify-content: center; animation: lbFadeIn 0.3s ease;
+  }
+  .lightbox.open { display: flex; }
+  @keyframes lbFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .lb-inner {
+    position: relative; max-width: 90vw; max-height: 88vh;
+    animation: lbZoomIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes lbZoomIn { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
+  .lb-inner img, .lb-inner video {
+    max-width: 90vw; max-height: 80vh; border-radius: 20px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5); display: block; object-fit: contain;
+  }
+  .lb-close {
+    position: absolute; top: -16px; right: -16px; width: 40px; height: 40px; border-radius: 50%;
+    background: white; border: none; cursor: pointer; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: transform 0.2s; z-index: 10;
+  }
+  .lb-close:hover { transform: scale(1.15) rotate(90deg); }
+  .lb-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px; border-radius: 50%;
+    background: white; border: none; cursor: pointer; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.2s; z-index: 10;
+  }
+  .lb-nav:hover { transform: translateY(-50%) scale(1.1); background: var(--pink-light); }
+  .lb-prev { left: -56px; }
+  .lb-next { right: -56px; }
+  .lb-counter {
+    position: absolute; bottom: -36px; left: 50%; transform: translateX(-50%);
+    color: rgba(255,255,255,0.7); font-size: 0.85rem; white-space: nowrap;
+  }
+
+  @media (max-width: 520px) {
+    .lb-prev { left: 4px; top: auto; bottom: -52px; transform: none; }
+    .lb-next { right: 4px; top: auto; bottom: -52px; transform: none; }
+    .lb-nav:hover { transform: scale(1.1); }
+    .lb-counter { bottom: -52px; }
+  }
+  @media (max-width: 480px) {
+    .photos-grid { grid-template-columns: repeat(2, 1fr); }
+    .game-stats { gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar" style="width: 25%"></div>
+<div class="step-dots">
+  <div class="dot active" id="dot1"></div>
+  <div class="dot" id="dot2"></div>
+  <div class="dot" id="dot3"></div>
+  <div class="dot" id="dot4"></div>
+</div>
+
+<div class="petals-bg" id="petalsBg"></div>
+
+<!-- МУЗЫКА: положи файлы рядом с HTML и впиши названия в массив TRACKS в JS ниже -->
+<audio id="bgMusic"></audio>
+
+<div class="music-player" id="musicPlayer">
+  <!-- Header: cover + track info -->
+  <div class="mp-header">
+    <div class="mp-cover" id="mpCover">🎵</div>
+    <div class="mp-info">
+      <div class="mp-track-name" id="mpTrackName">Загрузка...</div>
+      <div class="mp-artist" id="mpArtist">— нажми ▶ для старта</div>
+    </div>
+    <button class="mp-list-btn" id="mpListBtn" onclick="toggleTracklist()" title="Треклист">☰</button>
+  </div>
+
+  <!-- Progress -->
+  <div class="mp-progress-wrap">
+    <div class="mp-progress-bg">
+      <div class="mp-progress-fill" id="mpFill"></div>
+    </div>
+    <input type="range" class="mp-progress-input" id="mpSeek" min="0" max="100" value="0" oninput="seekTo(this.value)">
+  </div>
+  <div class="mp-times">
+    <span id="mpCurrent">0:00</span>
+    <span id="mpDuration">0:00</span>
+  </div>
+
+  <!-- Controls -->
+  <div class="mp-controls">
+    <button class="mp-btn" onclick="mpPrev()" title="Назад">
+      <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+    </button>
+    <button class="mp-btn mp-play-btn" id="mpPlayBtn" onclick="toggleMusic()">
+      <svg id="mpPlayIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <button class="mp-btn" onclick="mpNext()" title="Вперёд">
+      <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/></svg>
+    </button>
+  </div>
+
+  <!-- Volume -->
+  <div class="mp-volume-row">
+    <span class="mp-vol-icon" id="mpVolIcon" onclick="toggleMute()">🔊</span>
+    <input type="range" class="mp-vol-slider" id="mpVolSlider" min="0" max="100" value="35" oninput="setVolume(this.value)">
+  </div>
+
+  <!-- Tracklist -->
+  <div class="mp-tracklist" id="mpTracklist">
+    <!-- заполняется из JS -->
+  </div>
+</div>
+
+<!-- ===== SCREEN 1: INTRO ===== -->
+<div class="screen active" id="screen1">
+  <div class="intro-content">
+    <div class="date-badge">8 марта</div>
+    <h1 class="intro-title">С праздником,</h1>
+    <h2 class="intro-name">Анастасия!</h2>
+    <p class="intro-sub">Тебя ждёт небольшое путешествие из цветов, игры и тёплых слов 🌸</p>
+    <div class="envelope-wrap" onclick="openEnvelope()">
+      <div class="envelope">
+        <div class="env-body">
+          <div class="env-flap" id="envFlap"></div>
+          <div class="env-left"></div>
+          <div class="env-right"></div>
+          <div class="env-bottom"></div>
+          <div class="env-letter" id="envLetter">💌</div>
+        </div>
+      </div>
+      <p style="margin-top:0.7rem; font-size:0.85rem; color:#bbb;">нажми, чтобы открыть</p>
+    </div>
+    <button class="btn-main" id="startBtn" style="display:none" onclick="goTo(2)">Начать →</button>
+  </div>
+</div>
+
+<!-- ===== SCREEN 2: GAME ===== -->
+<div class="screen" id="screen2">
+  <div class="game-wrap">
+    <div class="section-label">Этап 2 из 4</div>
+    <h2 class="game-title">Собери букет!</h2>
+    <p class="game-sub">Лови падающие цветы корзинкой. Собери 15 — и двигаемся дальше 🌺</p>
+    <div class="game-stats">
+      <div class="stat-box">Поймано<span id="scoreDisplay">0</span></div>
+      <div class="stat-box">Осталось<span id="timeDisplay">30</span></div>
+      <div class="stat-box">Цель<span>15 🌸</span></div>
+    </div>
+    <canvas id="gameCanvas" width="480" height="320"></canvas>
+    <p class="game-message" id="gameMsg">Двигай мышкой или касанием!</p>
+    <button class="btn-next" id="nextBtn" onclick="goTo(3)">К моментам →</button>
+  </div>
+</div>
+
+<!-- ===== SCREEN 3: MOMENTS ===== -->
+<div class="screen" id="screen3">
+  <div class="moments-wrap">
+    <div class="section-label">Этап 3 из 4</div>
+    <h2 class="moments-title">Веселые моменты</h2>
+    <p class="moments-sub">Несколько кадров, которые хочется помнить ✨</p>
+    <div class="photos-grid">
+
+
+      <!-- МОМЕНТ 6: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/YLnw0d4.png" alt="выращиваем шмаль🌿">
+      </div>
+
+      <!-- МОМЕНТ 7: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/4lgbXXj.png" alt="🔞мусорка">
+      </div>
+
+      <!-- МОМЕНТ 8: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/L11YAJw.png" alt="подсматриваем 🔭">
+      </div>
+
+      <!-- МОМЕНТ 8: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/X1ekFIx.png" alt="подсматриваем 🔭">
+      </div>
+
+      <!-- МОМЕНТ 8: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/tWj9RrG.png" alt="подсматриваем 🔭">
+      </div>
+
+      <!-- МОМЕНТ 8: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/Rn3FNp8.png" alt="подсматриваем 🔭">
+      </div>
+
+      <!-- МОМЕНТ 8: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/QQ7utaG.png" alt="подсматриваем 🔭">
+      </div>
+
+      <!-- МОМЕНТ 9: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/lB5NABZ.jpeg" alt="(●'◡'●)">
+      </div>
+
+      <!-- МОМЕНТ 9: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/mDbmJ3x.png" alt="(●'◡'●)">
+      </div>
+
+      <!-- МОМЕНТ 9: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/Dl3yDI0.jpeg" alt="(●'◡'●)">
+      </div>
+
+      <!-- МОМЕНТ 9: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/mJUb8p4.png" alt="(●'◡'●)">
+      </div>
+
+      <!-- МОМЕНТ 9: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/NgKjsI2.png" alt="(●'◡'●)">
+      </div>
+
+      <!-- МОМЕНТ 9: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/iNHRLMS.jpeg" alt="(●'◡'●)">
+      </div>
+
+      <!-- МОМЕНТ 9: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/CQU5Jzj.jpeg" alt="(●'◡'●)">
+      </div>
+
+      <!-- МОМЕНТ 9: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/yZfByp9.png" alt="(●'◡'●)">
+      </div>
+
+      <!-- МОМЕНТ 9: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/EF2Ze2E.png" alt="(●'◡'●)">
+      </div>
+
+      <!-- МОМЕНТ 9: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/RHMPcAC.png" alt="(●'◡'●)">
+      </div>
+
+      <!-- МОМЕНТ 9: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/wm4mTzy.png" alt="(●'◡'●)">
+      </div>
+
+      <!-- МОМЕНТ 9: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/QEjfhvK.png" alt="(●'◡'●)">
+      </div>
+
+      <!-- МОМЕНТ 9: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/LTb3nJ6.jpeg" alt="(●'◡'●)">
+      </div>
+
+      <!-- МОМЕНТ 9: замени src на имя файла -->
+      <div class="photo-slot">
+        <img src="https://i.imgur.com/qAU2m7H.png" alt="(●'◡'●)">
+      </div>
+
+
+
+      <!-- МОМЕНТ 1: замени src на имя файла -->
+      <div class="photo-slot">
+        <video src="video1.mp4" muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:16px"></video>
+      </div>
+
+      <!-- МОМЕНТ 2: замени src на имя файла -->
+      <div class="photo-slot">
+        <video src="video2.mp4" muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:16px"></video>
+      </div>
+
+      <!-- МОМЕНТ 3: замени src на имя файла -->
+      <div class="photo-slot">
+        <video src="video3.mp4" muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:16px"></video>
+      </div>
+      
+
+      <!-- МОМЕНТ 4: замени src на имя файла -->
+      <div class="photo-slot">
+        <video src="video4.mp4" muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:16px"></video>
+      </div>
+
+      <!-- МОМЕНТ 5: замени src на имя файла -->
+      <div class="photo-slot">
+        <video src="video5.mp4" muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:16px"></video>
+      </div>
+
+      <!-- МОМЕНТ 5: замени src на имя файла -->
+      <div class="photo-slot">
+        <video src="video6.mp4" muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:16px"></video>
+      </div>
+
+      <!-- МОМЕНТ 5: замени src на имя файла -->
+      <div class="photo-slot">
+        <video src="video7.mp4" muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:16px"></video>
+      </div>
+
+      <!-- МОМЕНТ 5: замени src на имя файла -->
+      <div class="photo-slot">
+        <video src="video8.mp4" muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:16px"></video>
+      </div>
+
+
+      <!-- МОМЕНТ 5: замени src на имя файла -->
+      <div class="photo-slot">
+        <video src="video9.mp4" muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:16px"></video>
+      </div>
+
+      <!-- МОМЕНТ 5: замени src на имя файла -->
+      <div class="photo-slot">
+        <video src="video10.mp4" muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:16px"></video>
+      </div>
+
+      <!-- МОМЕНТ 5: замени src на имя файла -->
+      <div class="photo-slot">
+        <video src="video11.mp4" muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:16px"></video>
+      </div>
+
+    </div>
+    <p class="moments-caption">«Лучшие воспоминания — те, от которых улыбаешься ни с того ни с сего»</p>
+    <button class="btn-main" onclick="goTo(4)">К поздравлению →</button>
+  </div>
+</div>
+
+<!-- ===== SCREEN 4: FINAL ===== -->
+<div class="screen" id="screen4">
+  <div class="final-wrap">
+    <div class="final-emoji">🌸</div>
+    <h2 class="final-title">Анастасия Константиновна!</h2>
+    <div class="final-card">
+      <p class="final-text">
+        Поздравляю тебе с вот этим блин международным днём "не рожала не женщина".<br>
+        Желаю тебе вкусной еды, много-много терпения (тратить только на меня),
+        деньжат побольше и очень много вот этих кондиционеров твоих, для одежды, волос, белья ну и для чего там еще есть, чтобы ты всегда вкусно пахла.
+      </p>
+      <div class="final-signature">Я тебя очень очень очень сильно лублу!</div>
+    </div>
+    <button class="confetti-btn" onclick="launchConfetti()">🎉 Ещё раз!</button>
+    <br><br>
+    <button class="btn-main" onclick="goTo(1)" style="font-size:0.9rem; padding:10px 25px;">↩ Сначала</button>
+  </div>
+</div>
+
+<!-- ===== LIGHTBOX ===== -->
+<div class="lightbox" id="lightbox" onclick="lbClickOutside(event)">
+  <div class="lb-inner" id="lbInner">
+    <button class="lb-close" onclick="closeLightbox()">✕</button>
+    <button class="lb-nav lb-prev" onclick="lbNav(-1)">‹</button>
+    <button class="lb-nav lb-next" onclick="lbNav(1)">›</button>
+    <img id="lbImg" src="" alt="" style="display:none">
+    <video id="lbVideo" autoplay controls style="display:none"></video>
+    <div class="lb-counter" id="lbCounter"></div>
+  </div>
+</div>
+
+<script>
+// ========== PETALS ==========
+(function() {
+  const bg = document.getElementById('petalsBg');
+  const symbols = ['🌸','🌺','🌷','✿','❀','💮'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (5 + Math.random() * 8) + 's';
+    p.style.animationDelay = (Math.random() * 8) + 's';
+    p.style.fontSize = (1 + Math.random() * 1.2) + 'rem';
+    p.style.opacity = 0.3 + Math.random() * 0.4;
+    bg.appendChild(p);
+  }
+})();
+
+// ========== NAVIGATION ==========
+let currentScreen = 1;
+function goTo(n) {
+  const cur = document.getElementById('screen' + currentScreen);
+  cur.classList.add('fade-out');
+  setTimeout(() => {
+    cur.classList.remove('fade-out', 'active');
+    currentScreen = n;
+    document.getElementById('screen' + n).classList.add('active');
+    updateProgress(n);
+    if (n === 2) startGame();
+    if (n === 4) setTimeout(launchConfetti, 600);
+  }, 500);
+}
+function updateProgress(n) {
+  document.getElementById('progressBar').style.width = (n * 25) + '%';
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('dot' + i).className = 'dot' + (i < n ? ' done' : i === n ? ' active' : '');
+  }
+}
+
+// ========== ENVELOPE ==========
+let envelopeOpened = false;
+function openEnvelope() {
+  if (envelopeOpened) return;
+  envelopeOpened = true;
+  document.getElementById('envFlap').classList.add('open');
+  document.getElementById('envLetter').classList.add('fly');
+  setTimeout(() => {
+    const btn = document.getElementById('startBtn');
+    btn.style.display = 'inline-block';
+    btn.style.animation = 'fadeInUp 0.5s ease';
+  }, 700);
+}
+
+// ========== GAME ==========
+let gameRunning = false, score = 0, timeLeft = 30;
+let flowers = [], basketX = 240, animId, timerInt;
+const BASKET_W = 70, BASKET_H = 40, GOAL = 15;
+const FLOWER_TYPES = ['🌸','🌺','🌷','🌼','💐'];
+
+function startGame() {
+  if (gameRunning) return;
+  const canvas = document.getElementById('gameCanvas');
+  canvas.width = Math.min(480, window.innerWidth - 32);
+  canvas.height = 320 * (canvas.width / 480);
+  const ctx = canvas.getContext('2d');
+  score = 0; timeLeft = 30; flowers = []; gameRunning = true;
+  document.getElementById('scoreDisplay').textContent = 0;
+  document.getElementById('timeDisplay').textContent = 30;
+  document.getElementById('nextBtn').style.display = 'none';
+  document.getElementById('gameMsg').textContent = 'Двигай мышкой или касанием!';
+
+  canvas.onmousemove = e => { const r = canvas.getBoundingClientRect(); basketX = (e.clientX - r.left) / (r.width / 480); };
+  canvas.ontouchmove = e => { e.preventDefault(); const r = canvas.getBoundingClientRect(); basketX = (e.touches[0].clientX - r.left) / (r.width / 480); };
+
+  function spawnFlower() {
+    if (!gameRunning) return;
+    flowers.push({ x: 30 + Math.random() * 420, y: -20, speed: 1.5 + Math.random() * 2.5, type: FLOWER_TYPES[Math.floor(Math.random() * FLOWER_TYPES.length)], size: 18 + Math.random() * 10 });
+    setTimeout(spawnFlower, 600 + Math.random() * 500);
+  }
+  spawnFlower();
+
+  timerInt = setInterval(() => { if (!gameRunning) return; timeLeft--; document.getElementById('timeDisplay').textContent = timeLeft; if (timeLeft <= 0) endGame(); }, 1000);
+
+  function draw() {
+    const w = canvas.width, h = canvas.height, sc = w / 480;
+    ctx.clearRect(0, 0, w, h);
+    const bg = ctx.createLinearGradient(0, 0, 0, h);
+    bg.addColorStop(0, '#fff0f7'); bg.addColorStop(1, '#e8f4ff');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, w, h);
+
+    const bx = basketX * sc - (BASKET_W * sc) / 2, by = h - BASKET_H * sc - 10 * sc;
+    ctx.save();
+    const grad = ctx.createLinearGradient(bx, by, bx, by + BASKET_H * sc);
+    grad.addColorStop(0, '#f8bbd0'); grad.addColorStop(1, '#e91e8c');
+    ctx.fillStyle = grad; ctx.beginPath(); ctx.roundRect(bx, by, BASKET_W * sc, BASKET_H * sc, 8 * sc); ctx.fill();
+    ctx.strokeStyle = '#c2185b'; ctx.lineWidth = 2 * sc; ctx.stroke();
+    ctx.beginPath(); ctx.arc(bx + BASKET_W * sc / 2, by, 20 * sc, Math.PI, 0, false); ctx.strokeStyle = '#e91e8c'; ctx.lineWidth = 3 * sc; ctx.stroke();
+    ctx.font = `${14 * sc}px Nunito`; ctx.fillStyle = 'white'; ctx.textAlign = 'center'; ctx.fillText('🧺', bx + BASKET_W * sc / 2, by + 26 * sc);
+    ctx.restore();
+
+    flowers.forEach(f => { f.y += f.speed; ctx.font = `${f.size * sc}px serif`; ctx.textAlign = 'center'; ctx.fillText(f.type, f.x * sc, f.y * sc); });
+
+    const bLeft = basketX - BASKET_W / 2, bRight = basketX + BASKET_W / 2, bTop = 320 - BASKET_H - 10;
+    flowers = flowers.filter(f => {
+      if (f.y > bTop && f.y < bTop + BASKET_H && f.x > bLeft && f.x < bRight) {
+        score++; document.getElementById('scoreDisplay').textContent = score;
+        if (score >= GOAL) { endGame(true); return false; } return false;
+      }
+      return f.y < canvas.height + 30;
+    });
+
+    const pct = Math.min(score / GOAL, 1);
+    ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.beginPath(); ctx.roundRect(10*sc, 10*sc, 120*sc, 12*sc, 6*sc); ctx.fill();
+    const barG = ctx.createLinearGradient(10*sc, 0, 130*sc, 0); barG.addColorStop(0, '#e91e8c'); barG.addColorStop(1, '#5b9bd5');
+    ctx.fillStyle = barG; ctx.beginPath(); ctx.roundRect(10*sc, 10*sc, 120*sc*pct, 12*sc, 6*sc); ctx.fill();
+
+    if (gameRunning) animId = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function endGame(won) {
+  gameRunning = false; clearInterval(timerInt); cancelAnimationFrame(animId);
+  const msg = document.getElementById('gameMsg');
+  msg.textContent = (won || score >= GOAL) ? `🎉 Ура! Поймано ${score} цветков — букет готов!` : `Поймано ${score} из ${GOAL}. Всё равно красиво! 🌸`;
+  msg.style.color = (won || score >= GOAL) ? '#e91e8c' : '#aaa';
+  const btn = document.getElementById('nextBtn');
+  btn.style.display = 'inline-block'; btn.style.animation = 'fadeInUp 0.4s ease';
+}
+
+// ========== MUSIC PLAYER ==========
+// 👇 СЮДА добавляй свои треки: { file: 'имя_файла.mp3', name: 'Название', artist: 'Исполнитель' }
+const TRACKS = [
+  { file: 'music.mp3',   name: 'Шёлк', artist: 'Ваня Дмитриенко', cover: '1.jpg' },
+  { file: 'music2.mp3',  name: 'your love', artist: '9mice', cover: '2.jpg'},
+  { file: 'music3.mp3',  name: 'Настя', artist: 'Кишлак', cover: '3.jpg' },
+  { file: 'music4.mp3',  name: 'вопреки', artist: 'тринадцать карат', cover: '4.jpg' },
+];
+
+const bgMusic = document.getElementById('bgMusic');
+let musicPlaying = false;
+let currentTrack = 0;
+let isMuted = false;
+let prevVol = 35;
+
+// Инициализация
+function mpInit() {
+  bgMusic.volume = 0.35;
+  bgMusic.addEventListener('timeupdate', mpUpdateProgress);
+  bgMusic.addEventListener('loadedmetadata', mpUpdateDuration);
+  bgMusic.addEventListener('ended', mpNext);
+  loadTrack(0, false);
+  buildTracklist();
+}
+
+function loadTrack(idx, autoplay) {
+  currentTrack = idx;
+  const t = TRACKS[idx];
+  bgMusic.src = t.file;
+  document.getElementById('mpTrackName').textContent = t.name;
+  document.getElementById('mpArtist').textContent = t.artist;
+  document.getElementById('mpFill').style.width = '0%';
+  document.getElementById('mpSeek').value = 0;
+  document.getElementById('mpCurrent').textContent = '0:00';
+  document.getElementById('mpDuration').textContent = '0:00';
+
+  // Обложка: картинка если есть, иначе эмодзи
+  const cover = document.getElementById('mpCover');
+  if (t.cover) {
+    cover.style.backgroundImage = `url('${t.cover}')`;
+    cover.style.backgroundSize = 'contain';
+    cover.style.backgroundRepeat = 'no-repeat';
+    cover.style.backgroundPosition = 'center';
+    cover.style.backgroundPosition = 'center';
+    cover.textContent = '';
+  } else {
+    cover.style.backgroundImage = '';
+    cover.textContent = '🎵';
+  }
+
+  highlightTrack(idx);
+  if (autoplay) {
+    bgMusic.play().then(() => setPlayingState(true)).catch(() => {});
+  }
+}
+
+function buildTracklist() {
+  const list = document.getElementById('mpTracklist');
+  list.innerHTML = TRACKS.map((t, i) => `
+    <div class="mp-track-item${i === currentTrack ? ' active' : ''}" id="mpItem${i}" onclick="loadTrack(${i}, true)">
+      <span class="mp-track-num">${i + 1}</span>
+      <span class="mp-track-label">${t.name} <span style="color:#ccc;font-weight:400">— ${t.artist}</span></span>
+    </div>
+  `).join('');
+}
+
+function highlightTrack(idx) {
+  document.querySelectorAll('.mp-track-item').forEach((el, i) => {
+    el.classList.toggle('active', i === idx);
+  });
+}
+
+function toggleTracklist() {
+  document.getElementById('mpTracklist').classList.toggle('open');
+  document.getElementById('mpListBtn').style.color =
+    document.getElementById('mpTracklist').classList.contains('open') ? 'var(--pink-deep)' : '';
+}
+
+function toggleMusic() {
+  if (musicPlaying) {
+    bgMusic.pause();
+    setPlayingState(false);
+  } else {
+    bgMusic.play().then(() => setPlayingState(true)).catch(() => {});
+  }
+}
+
+function mpNext() {
+  loadTrack((currentTrack + 1) % TRACKS.length, musicPlaying || true);
+}
+function mpPrev() {
+  if (bgMusic.currentTime > 3) { bgMusic.currentTime = 0; return; }
+  loadTrack((currentTrack - 1 + TRACKS.length) % TRACKS.length, musicPlaying || true);
+}
+
+function setPlayingState(playing) {
+  musicPlaying = playing;
+  const icon = document.getElementById('mpPlayIcon');
+  const cover = document.getElementById('mpCover');
+  if (playing) {
+    icon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+    cover.classList.add('playing');
+  } else {
+    icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+    cover.classList.remove('playing');
+  }
+}
+
+function mpUpdateProgress() {
+  if (!bgMusic.duration) return;
+  const pct = (bgMusic.currentTime / bgMusic.duration) * 100;
+  document.getElementById('mpFill').style.width = pct + '%';
+  document.getElementById('mpSeek').value = pct;
+  document.getElementById('mpCurrent').textContent = fmtTime(bgMusic.currentTime);
+}
+function mpUpdateDuration() {
+  document.getElementById('mpDuration').textContent = fmtTime(bgMusic.duration);
+}
+function seekTo(val) {
+  if (bgMusic.duration) bgMusic.currentTime = (val / 100) * bgMusic.duration;
+}
+function fmtTime(s) {
+  if (!s || isNaN(s)) return '0:00';
+  const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2, '0')}`;
+}
+
+function setVolume(val) {
+  const v = val / 100;
+  bgMusic.volume = v;
+  isMuted = v === 0;
+  const slider = document.getElementById('mpVolSlider');
+  slider.style.background = `linear-gradient(90deg, var(--pink-deep) 0%, var(--pink-deep) ${val}%, #eee ${val}%)`;
+  document.getElementById('mpVolIcon').textContent = v === 0 ? '🔇' : v < 0.4 ? '🔉' : '🔊';
+}
+
+function toggleMute() {
+  const slider = document.getElementById('mpVolSlider');
+  if (bgMusic.volume > 0) {
+    prevVol = bgMusic.volume * 100;
+    slider.value = 0; setVolume(0);
+  } else {
+    slider.value = prevVol; setVolume(prevVol);
+  }
+}
+
+// Автозапуск после первого взаимодействия
+function autoStartMusic() {
+  bgMusic.play().then(() => setPlayingState(true)).catch(() => {});
+  document.removeEventListener('click', autoStartMusic);
+  document.removeEventListener('touchstart', autoStartMusic);
+}
+document.addEventListener('click', autoStartMusic);
+document.addEventListener('touchstart', autoStartMusic);
+
+mpInit();
+
+// ========== LIGHTBOX ==========
+let lbCurrentIndex = 0;
+const lbSlots = () => Array.from(document.querySelectorAll('.photo-slot'));
+
+function openLightbox(index) {
+  lbCurrentIndex = index;
+  lbShow(index);
+  document.getElementById('lightbox').classList.add('open');
+  document.addEventListener('keydown', lbKeyHandler);
+}
+
+function closeLightbox() {
+  const lb = document.getElementById('lightbox');
+  lb.style.opacity = '0'; lb.style.transition = 'opacity 0.25s';
+  setTimeout(() => {
+    lb.classList.remove('open'); lb.style.opacity = ''; lb.style.transition = '';
+    const lbVid = document.getElementById('lbVideo');
+    lbVid.pause(); lbVid.src = '';
+    // Возобновить фоновую музыку
+    if (bgMusic._wasPlaying) { bgMusic.play(); bgMusic._wasPlaying = false; setPlayingState(true); }
+  }, 250);
+  document.removeEventListener('keydown', lbKeyHandler);
+}
+
+function lbShow(index) {
+  const slot = lbSlots()[index];
+  const img = slot.querySelector('img');
+  const vid = slot.querySelector('video');
+  const lbImg = document.getElementById('lbImg');
+  const lbVid = document.getElementById('lbVideo');
+  const inner = document.getElementById('lbInner');
+
+  inner.style.animation = 'none'; inner.offsetHeight;
+  inner.style.animation = 'lbZoomIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+
+  if (vid) {
+    lbImg.style.display = 'none';
+    lbVid.style.display = 'block';
+    lbVid.src = vid.src;
+    lbVid.muted = false;
+    lbVid.volume = 1;
+    lbVid.play();
+    // Ставим музыку на паузу
+    if (musicPlaying) { bgMusic._wasPlaying = true; bgMusic.pause(); setPlayingState(false); }
+  } else {
+    lbVid.pause(); lbVid.src = ''; lbVid.style.display = 'none';
+    lbImg.style.display = 'block';
+    lbImg.src = img ? img.src : '';
+    lbImg.alt = img ? img.alt : '';
+    // Возобновить музыку если была на паузе из-за видео
+    if (bgMusic._wasPlaying) { bgMusic.play(); bgMusic._wasPlaying = false; setPlayingState(true); }
+  }
+
+  document.getElementById('lbCounter').textContent = `${index + 1} / ${lbSlots().length}`;
+}
+
+function lbNav(dir) {
+  lbCurrentIndex = (lbCurrentIndex + dir + lbSlots().length) % lbSlots().length;
+  lbShow(lbCurrentIndex);
+}
+function lbClickOutside(e) { if (e.target === document.getElementById('lightbox')) closeLightbox(); }
+function lbKeyHandler(e) {
+  if (e.key === 'ArrowRight') lbNav(1);
+  else if (e.key === 'ArrowLeft') lbNav(-1);
+  else if (e.key === 'Escape') closeLightbox();
+}
+
+document.querySelectorAll('.photo-slot').forEach((slot, i) => {
+  slot.addEventListener('click', () => openLightbox(i));
+});
+
+// ========== CONFETTI ==========
+function launchConfetti() {
+  const colors = ['#f4a7c3','#b3d4f5','#d4b8f0','#e91e8c','#5b9bd5','#ffd700'];
+  const shapes = ['●','■','▲','★','♦'];
+  for (let i = 0; i < 80; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.top = '-20px';
+      el.style.color = colors[Math.floor(Math.random() * colors.length)];
+      el.style.fontSize = (8 + Math.random() * 10) + 'px';
+      el.style.animationDuration = (2 + Math.random() * 2) + 's';
+      el.style.animationDelay = Math.random() * 0.5 + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }, i * 20);
+  }
+}
+
+window.addEventListener('resize', () => {
+  if (currentScreen === 2) {
+    const canvas = document.getElementById('gameCanvas');
+    canvas.width = Math.min(480, window.innerWidth - 32);
+    canvas.height = 320 * (canvas.width / 480);
+  }
+});
+</script>
+</body>
+</html>
